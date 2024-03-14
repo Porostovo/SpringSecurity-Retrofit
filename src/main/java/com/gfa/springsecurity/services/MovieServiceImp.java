@@ -66,13 +66,23 @@ public class MovieServiceImp implements MovieService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             MovieDTO movieDTO = mapper.readValue(jsonString, MovieDTO.class);
-            System.out.println(movieDTO.getResults().get(2).getOriginal_title());
-
+                System.out.println(movieDTO.getResults().get(2).getOriginal_title());
+                System.out.println("Page: " + movieDTO.getPage());
+                System.out.println("Total pages: " + movieDTO.getTotal_pages());
+                System.out.println("Total results: " + movieDTO.getTotal_results());
+                System.out.println("Movies:");
             for (MovieResultDTO movieResultDTO : movieDTO.getResults()) {
-                System.out.println("Title: " + movieResultDTO.getTitle());
+
+                //System.out.println("Title: " + movieResultDTO.getTitle());
 //                System.out.println("Overview: " + movieResultDTO.getOverview());
 //                System.out.println("Release date: " + movieResultDTO.getRelease_date());
 //                System.out.println("Popularity: " + movieResultDTO.getPopularity());
+                Movie movie = new Movie();
+                if (movieRepository.findMovieByOriginalTitle(movieResultDTO.getTitle()).isEmpty()){
+                    movie.setOriginalTitle(movieResultDTO.getTitle());
+                    movie.setReleaseDate(movieResultDTO.getRelease_date());
+                    movieRepository.save(movie);
+                }
             }
 
 //            Movie movie = new Movie();
@@ -85,23 +95,19 @@ public class MovieServiceImp implements MovieService {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < resultsArray.size(); i++) {
-            Movie movie = new Movie();
-            JsonObject resultObject = resultsArray.get(i).getAsJsonObject();
-            if (movieRepository.findMovieByOriginalTitle(resultObject.get("original_title").getAsString()).isEmpty()){
-
-                String original_title = resultObject.get("original_title").getAsString();
-                //String overview = resultObject.get("overview").getAsString();
-                String release_date = resultObject.get("release_date").getAsString();
-
-                movie.setOriginalTitle(original_title);
-                // movie.setOverview(overview);
-                movie.setReleaseDate(release_date);
-                
-                movieRepository.save(movie);
-                System.out.println("data saved to database with name: "  + query);
-            }
-        }
+//        for (int i = 0; i < resultsArray.size(); i++) {
+//            Movie movie = new Movie();
+//            JsonObject resultObject = resultsArray.get(i).getAsJsonObject();
+//            if (movieRepository.findMovieByOriginalTitle(resultObject.get("original_title").getAsString()).isEmpty()){
+//
+//                movie.setOriginalTitle(resultObject.get("original_title").getAsString());
+//                movie.setReleaseDate(resultObject.get("release_date").getAsString());
+//                // movie.setOverview(resultObject.get("overview").getAsString());
+//
+//                movieRepository.save(movie);
+//                System.out.println("data saved to database with name: "  + query);
+//            }
+//        }
         return response;
     }
 
