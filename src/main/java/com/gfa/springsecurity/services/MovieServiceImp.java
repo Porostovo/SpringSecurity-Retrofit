@@ -36,7 +36,7 @@ public class MovieServiceImp implements MovieService {
     }
 
     @Override
-    public Call<Object> discoverMovies(String authorization) {
+    public Call<Object> discoverMovies(String authorization, String query) {
         return null;
     }
 
@@ -74,6 +74,7 @@ public class MovieServiceImp implements MovieService {
     @Override
     public Object getListOfMoviesAndSave() throws IOException {
 
+
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("https://api.themoviedb.org/3/")
@@ -81,13 +82,14 @@ public class MovieServiceImp implements MovieService {
 
         MovieService service = retrofit.create(MovieService.class);
 
-        Call<Object> call = service.discoverMovies(
-                "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjI4MzhkZGQ4ZDFjMWFlZmUwODFmMzdiYzc3NzE3MCIsIn" +
-                        "N1YiI6IjY1ZjA0ZWIwN2YwNTQwMDE2NDg1ZDZmMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ" +
-                        ".2sO58bPqK8B43OdbVKhc8Widfo_Bm-FuEXWrKtQKok0");
+        String authorizationToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjI4MzhkZGQ4ZDFjMWFlZmUwODFmMzdiYzc3NzE3MCIsInN1YiI6IjY1ZjA0ZWIwN2YwNTQwMDE2NDg1ZDZmMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2sO58bPqK8B43OdbVKhc8Widfo_Bm-FuEXWrKtQKok0";
+        String query = "duna"; // This is the value you want to use for the query parameter
+        Call<Object> call = service.discoverMovies(authorizationToken, query);
+
 
         //take original title from recieved JSON format
         Object response = call.execute().body();
+
         Gson gson = new Gson();
         String jsonString = gson.toJson(response);
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
