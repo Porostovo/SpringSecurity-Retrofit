@@ -3,6 +3,7 @@ package com.gfa.springsecurity.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gfa.springsecurity.models.Movie;
 import com.gfa.springsecurity.models.MovieDTO;
+import com.gfa.springsecurity.models.MovieResultDTO;
 import com.gfa.springsecurity.repositories.MovieRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -41,37 +42,6 @@ public class MovieServiceImp implements MovieService {
         return null;
     }
 
-
-//    @Override
-//    public void getMovies(Callback<List<Movie>> callback) {
-//        Call<List<Movie>> getMovies = movieApi.getMovies("Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjI4MzhkZGQ4ZDFjMWFlZmUwODFmMzdiYzc3NzE3MCIsInN1YiI6IjY1ZjA0ZWIwN2YwNTQwMDE2NDg1ZDZmMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2sO58bPqK8B43OdbVKhc8Widfo_Bm-FuEXWrKtQKok0");
-////       try {
-////           Response<List<Movie>> response = getMovies.execute();
-////           if (response.isSuccessful() && response.body() != null) {
-////               movieList = response.body();
-////           }
-////       } catch (Exception e) {
-////           throw new RuntimeException(e)   }
-////       return movieList;
-//        //  }
-//
-//        getMovies.enqueue(new Callback<List<Movie>>() {
-//            @Override
-//            public void onResponse(Call<List<Movie>> call, retrofit2.Response<List<Movie>> response) {
-//                if (response.isSuccessful()) {
-//                    List<Movie> listOfMovies = response.body();
-//                    callback.onResponse(call, response);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Movie>> call, Throwable t) {
-//                callback.onFailure(call, t);
-//            }
-//        });
-//    }
-
     @Override
     public Object getListOfMoviesAndSave(String query) throws IOException {
 
@@ -98,6 +68,13 @@ public class MovieServiceImp implements MovieService {
             MovieDTO movieDTO = mapper.readValue(jsonString, MovieDTO.class);
             System.out.println(movieDTO.getResults().get(2).getOriginal_title());
 
+            for (MovieResultDTO movieResultDTO : movieDTO.getResults()) {
+                System.out.println("Title: " + movieResultDTO.getTitle());
+//                System.out.println("Overview: " + movieResultDTO.getOverview());
+//                System.out.println("Release date: " + movieResultDTO.getRelease_date());
+//                System.out.println("Popularity: " + movieResultDTO.getPopularity());
+            }
+
 //            Movie movie = new Movie();
 //            movie.
 //            movie.setTitle(movieDTO.getTitle());
@@ -108,24 +85,22 @@ public class MovieServiceImp implements MovieService {
             e.printStackTrace();
         }
 
-
-
-
         for (int i = 0; i < resultsArray.size(); i++) {
             Movie movie = new Movie();
             JsonObject resultObject = resultsArray.get(i).getAsJsonObject();
+            if (movieRepository.findMovieByOriginalTitle(resultObject.get("original_title").getAsString()).isEmpty()){
 
-            String original_title = resultObject.get("original_title").getAsString();
-            //String overview = resultObject.get("overview").getAsString();
-            String release_date = resultObject.get("release_date").getAsString();
+                String original_title = resultObject.get("original_title").getAsString();
+                //String overview = resultObject.get("overview").getAsString();
+                String release_date = resultObject.get("release_date").getAsString();
 
-            movie.setOriginal_title(original_title);
-           // movie.setOverview(overview);
-            movie.setRelease_date(release_date);
-
-
-            movieRepository.save(movie);
-            System.out.println("data saved to database with name: "  + query);
+                movie.setOriginalTitle(original_title);
+                // movie.setOverview(overview);
+                movie.setReleaseDate(release_date);
+                
+                movieRepository.save(movie);
+                System.out.println("data saved to database with name: "  + query);
+            }
         }
         return response;
     }
@@ -137,6 +112,6 @@ public class MovieServiceImp implements MovieService {
 
     @Override
     public List<Movie> getMoviesBySearch(String search) {
-        return movieRepository.findAll().stream().filter(movie -> (movie.getOriginal_title()).toLowerCase().contains(search.toLowerCase())).toList();
+        return movieRepository.findAll().stream().filter(movie -> (movie.getOriginalTitle()).toLowerCase().contains(search.toLowerCase())).toList();
     }
 }
