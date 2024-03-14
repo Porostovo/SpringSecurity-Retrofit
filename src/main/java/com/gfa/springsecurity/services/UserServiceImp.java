@@ -3,6 +3,7 @@ package com.gfa.springsecurity.services;
 import com.gfa.springsecurity.models.UserInfo;
 import com.gfa.springsecurity.repositories.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +37,13 @@ public class UserServiceImp implements UserService {
                 .roles("user")
                 .build();
 
-        userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
+        if (userInfoRepository.findByUsername(userInfo.getUsername()).isEmpty()){
+            userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
+        } else throw new BadCredentialsException("user with this username already exists");
+
+
+
+
 
         return new InMemoryUserDetailsManager(newUser);
     }
