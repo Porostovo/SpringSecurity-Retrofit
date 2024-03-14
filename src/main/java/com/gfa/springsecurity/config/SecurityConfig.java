@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/homePage", true)
+                                .defaultSuccessUrl("/movieList", true)
                                 .failureUrl("/index")
                 ).logout(
                         logout -> logout

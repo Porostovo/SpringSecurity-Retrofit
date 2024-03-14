@@ -37,8 +37,8 @@ public class MovieController {
         return movie;
     }
 
-    @GetMapping("/movies2")
-    public Object listOfMovies() throws IOException {
-        return movieService.getListOfMoviesAndSave();
-    }
+//    @GetMapping("/movies2")
+//    public Object listOfMovies() throws IOException {
+//        return movieService.getListOfMoviesAndSave();
+//    }
 }

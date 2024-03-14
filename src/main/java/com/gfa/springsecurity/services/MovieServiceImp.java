@@ -16,6 +16,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Service
@@ -36,7 +37,7 @@ public class MovieServiceImp implements MovieService {
     }
 
     @Override
-    public Call<Object> discoverMovies(String authorization) {
+    public Call<Object> discoverMovies(String authorization, String query) {
         return null;
     }
 
@@ -72,7 +73,7 @@ public class MovieServiceImp implements MovieService {
 //    }
 
     @Override
-    public Object getListOfMoviesAndSave() throws IOException {
+    public Object getListOfMoviesAndSave(String query) throws IOException {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -81,10 +82,9 @@ public class MovieServiceImp implements MovieService {
 
         MovieService service = retrofit.create(MovieService.class);
 
-        Call<Object> call = service.discoverMovies(
-                "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjI4MzhkZGQ4ZDFjMWFlZmUwODFmMzdiYzc3NzE3MCIsIn" +
-                        "N1YiI6IjY1ZjA0ZWIwN2YwNTQwMDE2NDg1ZDZmMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ" +
-                        ".2sO58bPqK8B43OdbVKhc8Widfo_Bm-FuEXWrKtQKok0");
+        String authorizationToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjI4MzhkZGQ4ZDFjMWFlZmUwODFmMzdiYzc3NzE3MCIsInN1YiI6IjY1ZjA0ZWIwN2YwNTQwMDE2NDg1ZDZmMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2sO58bPqK8B43OdbVKhc8Widfo_Bm-FuEXWrKtQKok0";
+
+        Call<Object> call = service.discoverMovies(authorizationToken, query);
 
         //take original title from recieved JSON format
         Object response = call.execute().body();
@@ -114,10 +114,29 @@ public class MovieServiceImp implements MovieService {
         for (int i = 0; i < resultsArray.size(); i++) {
             Movie movie = new Movie();
             JsonObject resultObject = resultsArray.get(i).getAsJsonObject();
+
             String original_title = resultObject.get("original_title").getAsString();
+            //String overview = resultObject.get("overview").getAsString();
+            String release_date = resultObject.get("release_date").getAsString();
+
             movie.setOriginal_title(original_title);
+           // movie.setOverview(overview);
+            movie.setRelease_date(release_date);
+
+
             movieRepository.save(movie);
+            System.out.println("data saved to database with name: "  + query);
         }
         return response;
+    }
+
+    @Override
+    public List<Movie> getMovies() {
+        return movieRepository.findAll();
+    }
+
+    @Override
+    public List<Movie> getMoviesBySearch(String search) {
+        return movieRepository.findAll().stream().filter(movie -> (movie.getOriginal_title()).toLowerCase().contains(search.toLowerCase())).toList();
     }
 }

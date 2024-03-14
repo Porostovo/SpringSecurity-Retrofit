@@ -31,21 +31,21 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDetailsService userRegister(UserInfo userInfo) {
-        UserDetails newUser = User.builder()
-                .username(userInfo.getUsername())
-                .password(passwordEncoder().encode(userInfo.getPassword()))
-                .roles("user")
-                .build();
 
-        if (userInfoRepository.findByUsername(userInfo.getUsername()).isEmpty()){
-            userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
-        } else throw new BadCredentialsException("user with this username already exists");
-
-
-
-
-
-        return new InMemoryUserDetailsManager(newUser);
+        try {
+            if (userInfoRepository.findByUsername(userInfo.getUsername()).isEmpty()){
+                UserDetails newUser = User.builder()
+                        .username(userInfo.getUsername())
+                        .password(passwordEncoder().encode(userInfo.getPassword()))
+                        .roles("user")
+                        .build();
+                userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
+                return new InMemoryUserDetailsManager(newUser);
+            }
+        } catch (Exception e){
+            throw new BadCredentialsException("user with this username already exists");
+        }
+        return null;
     }
 
 //    @Override

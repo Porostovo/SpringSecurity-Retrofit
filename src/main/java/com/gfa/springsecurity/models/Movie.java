@@ -18,6 +18,8 @@ public class Movie {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     private String original_title;
+    //private String overview;
+    private String release_date;
 
     public Movie(String title) {
         this.original_title = title;

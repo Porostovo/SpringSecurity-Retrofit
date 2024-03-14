@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{/search}" method="post">
+        <label for="search">Search by title: </label>
+        <input type="text" name="search" id="search">
+        <button type="submit">Search</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Year</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="movie : ${movies}">
+                <td th:text="${movie.original_title}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
