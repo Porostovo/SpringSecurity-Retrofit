@@ -17,9 +17,9 @@ public class Movie {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
+    private String original_title;
 
     public Movie(String title) {
-        this.title = title;
+        this.original_title = title;
     }
 }
