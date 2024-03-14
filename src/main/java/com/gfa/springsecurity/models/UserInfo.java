@@ -23,10 +23,12 @@ public class UserInfo {
         this.username = username;
         this.password = password;
         this.email = email;
+
     }
     public UserInfo(String username, String password){
         this.username = username;
         this.password = password;
+
     }
 
 }

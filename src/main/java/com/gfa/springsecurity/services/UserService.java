@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserService {
 
     UserDetailsService userRegister(UserInfo userInfo);
-    UserDetails findByUsername(String username);
+ //   UserDetails findByUsername(String username);
 
-    boolean authenticate(String username, String password);
+   // boolean authenticate(String username, String password);
 }

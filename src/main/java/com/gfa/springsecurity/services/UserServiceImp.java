@@ -11,6 +11,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImp implements UserService {
 
@@ -22,7 +24,7 @@ public class UserServiceImp implements UserService {
     }
 
 
-    private static PasswordEncoder passwordEncoder(){
+    private static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -39,18 +41,21 @@ public class UserServiceImp implements UserService {
         return new InMemoryUserDetailsManager(newUser);
     }
 
-    @Override
-    public UserDetails findByUsername(String username) {
-        UserInfo userInfo = userInfoRepository.findByUsername(username);
-        return User.builder()
-                .username(userInfo.getUsername())
-                .password(userInfo.getPassword())
-                .build();
-    }
+//    @Override
+//    public UserDetails findByUsername(String username) {
+//        Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
+////        UserInfo userInfo = userInfoRepository.findByUsername(username);
+// //       UserInfo userInfo = userInfoOptional.get().
+//        return User.builder()
+//                .username(userInfoOptional.get().getUsername())
+//                .password(userInfoOptional.get().getPassword())
+//                .build();
+// }
 
-    @Override
-    public boolean authenticate(String username, String password) {
-        UserDetails userDetails = findByUsername(username);
-        return userDetails != null && passwordEncoder().matches(password, userDetails.getPassword());
-    }
+//    @Override
+//    public boolean authenticate(String username, String password) {
+//        UserDetails userDetails = findByUsername(username);
+//        return userDetails != null && passwordEncoder().matches(password, userDetails.getPassword());
+//    }
 }
+
