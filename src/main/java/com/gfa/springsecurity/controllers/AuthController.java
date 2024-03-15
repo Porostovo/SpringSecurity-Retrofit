@@ -45,7 +45,7 @@ public class AuthController {
             System.out.println("ex" + e);
             return "redirect:/register?error=true"; // throw new BadCredentialsException("user with this username already exists");
         }
-        return "redirect:/register?success=true";
+        return "redirect:/login?success=true";
     }
 
 }
