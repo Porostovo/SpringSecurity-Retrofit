@@ -8,14 +8,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Optional;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -47,12 +41,13 @@ public class UserServiceImp implements UserService {
                         .build();
                 userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
 
-                return null; //new InMemoryUserDetailsManager(newUser); we do not use
+                //return null; //new InMemoryUserDetailsManager(newUser); we do not use
             } else {
                 throw new BadCredentialsException("User with this username already exists");
             }
         } catch (Exception e) {
             throw new BadCredentialsException("User with this username already exists");
         }
+        return null;
     }
 }

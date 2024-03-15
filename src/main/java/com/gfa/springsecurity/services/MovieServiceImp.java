@@ -45,7 +45,6 @@ public class MovieServiceImp implements MovieService {
     @Override
     public Object getListOfMoviesAndSave(String query) throws IOException {
 
-
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("https://api.themoviedb.org/3/")
@@ -122,6 +121,7 @@ public class MovieServiceImp implements MovieService {
 
     @Override
     public List<Movie> getMoviesBySearch(String search) {
-        return movieRepository.findAll().stream().filter(movie -> (movie.getOriginalTitle()).toLowerCase().contains(search.toLowerCase())).toList();
+        return movieRepository.findAll().stream()
+                .filter(movie -> (movie.getOriginalTitle()).toLowerCase().contains(search.toLowerCase())).toList();
     }
 }
