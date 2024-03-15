@@ -28,17 +28,16 @@ public class UserAuthentication implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
         Optional<UserInfo> user = userInfoRepository.findByUsername(username);
 
-        if (user.isPresent()){
-            if (passwordEncoder.matches(pwd, user.get().getPassword())){
+        if (user.isPresent()) {
+            if (passwordEncoder.matches(pwd, user.get().getPassword())) {
                 List<GrantedAuthority> authorities = new ArrayList<>();
-          //      authorities.add(new SimpleGrantedAuthority(user.get().getRole()));
+                //      authorities.add(new SimpleGrantedAuthority(user.get().getRole()));
                 return new UsernamePasswordAuthenticationToken(user, pwd, authorities);
             } else {
                 throw new BadCredentialsException("Incorrect username or password");
