@@ -13,15 +13,13 @@ import java.util.List;
 
 
 public interface MovieService {
-    @GET("https://api.themoviedb.org/3/search/movie?")
+    @GET("search/movie")
     Call<Object> discoverMovies(@Header("Authorization") String authorization,
-                                @Query("query") String query);
-
-    //void getMovies(Callback<List<Movie>> callback);
-
+                                @Query("query") String Search);
 
     Object getListOfMoviesAndSave(String query) throws IOException;
 
     List<Movie> getMovies();
+
     List<Movie> getMoviesBySearch(String search);
 }

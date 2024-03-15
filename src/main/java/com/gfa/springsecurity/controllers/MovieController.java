@@ -21,8 +21,9 @@ public class MovieController {
     }
 
     @GetMapping("/movieList")
-    public String movieList(Model model, @RequestParam(required = false) String search){
-        System.out.println(search);
+    public String movieList(Model model, @RequestParam(required = false, defaultValue = "#$%^&**(") String search){
+        // we should implement if there is no search word, default value is not a good solution..
+        // also if we change user, the list remains from previous search
         model.addAttribute("movies", movieService.getMoviesBySearch(search));
         return "movies";
     }

@@ -85,6 +85,8 @@ public class SecurityConfig {
 
         userServiceImp.userRegister(new UserInfo(user.getUsername(), "bbb"));
 
+        userServiceImp.userRegister(new UserInfo("1", "1"));
+
         UserDetails admin = User.builder()
                 .username("ccc")
                 .password(passwordEncoder().encode("ddd"))

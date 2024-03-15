@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie,Long> {
   //  List<Movie> findMoviesByOriginal_titleContainingIgnoreCase();
-    Optional<Movie> findMovieByOriginalTitle(String title);
+    List<Movie> findMovieByOriginalTitle(String title);
 
 }
 
