@@ -1,44 +1,35 @@
 package com.gfa.springsecurity.controllers;
 
-import com.gfa.springsecurity.models.Movie;
 import com.gfa.springsecurity.services.MovieService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-
-@RestController
+@Controller
 public class MovieController {
+
     private final MovieService movieService;
 
-
-    private List<Movie> movies = new ArrayList<>();
-
+    @Autowired
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
 
-    @GetMapping("/movies")
-    public List<Movie> movies() {
-        List<Movie> movies = new ArrayList<>();
-        movies.add(new Movie("Shrek"));
-        movies.add(new Movie("Shrek 2"));
-        return movies;
+    @GetMapping("/movieList")
+    public String movieList(Model model, @RequestParam(required = false) String search){
+        System.out.println(search);
+        model.addAttribute("movies", movieService.getMoviesBySearch(search));
+        return "movies";
     }
 
-    @PostMapping("/movies")
-    public Movie createMovie(@RequestBody Movie movie){
-        movies.add(movie);
-        return movie;
-    }
-
-    @GetMapping("/movies2")
-    public Object listOfMovies() throws IOException {
-        return movieService.getListOfMoviesAndSave();
+    @PostMapping("/search")
+    public String searchMovies(Model model, @RequestParam String search) throws IOException {
+        model.addAttribute("movies",  movieService.getListOfMoviesAndSave(search));
+        return "redirect:/movieList?search=" + search;
     }
 }
