@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Optional;
 
@@ -33,36 +36,23 @@ public class UserServiceImp implements UserService {
     public UserDetailsService userRegister(UserInfo userInfo) {
 
         try {
-            if (userInfoRepository.findByUsername(userInfo.getUsername()).isEmpty()){
+            if (userInfoRepository.findByUsername(userInfo.getUsername()).isEmpty()) {
+                //this works, but its better to use UserDetails newUser = User.builder()
+                //userInfoRepository.save(new UserInfo(userInfo.getUsername(), passwordEncoder().encode(userInfo.getPassword())));
+
                 UserDetails newUser = User.builder()
                         .username(userInfo.getUsername())
                         .password(passwordEncoder().encode(userInfo.getPassword()))
                         .roles("user")
                         .build();
                 userInfoRepository.save(new UserInfo(newUser.getUsername(), newUser.getPassword()));
-                return new InMemoryUserDetailsManager(newUser);
+
+                return null; //new InMemoryUserDetailsManager(newUser); we do not use
+            } else {
+                throw new BadCredentialsException("User with this username already exists");
             }
-        } catch (Exception e){
-            throw new BadCredentialsException("user with this username already exists");
+        } catch (Exception e) {
+            throw new BadCredentialsException("User with this username already exists");
         }
-        return null;
     }
-
-//    @Override
-//    public UserDetails findByUsername(String username) {
-//        Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
-////        UserInfo userInfo = userInfoRepository.findByUsername(username);
-// //       UserInfo userInfo = userInfoOptional.get().
-//        return User.builder()
-//                .username(userInfoOptional.get().getUsername())
-//                .password(userInfoOptional.get().getPassword())
-//                .build();
-// }
-
-//    @Override
-//    public boolean authenticate(String username, String password) {
-//        UserDetails userDetails = findByUsername(username);
-//        return userDetails != null && passwordEncoder().matches(password, userDetails.getPassword());
-//    }
 }
-

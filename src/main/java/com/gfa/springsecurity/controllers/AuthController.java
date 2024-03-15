@@ -42,9 +42,10 @@ public class AuthController {
         try {
             userService.userRegister(userInfo);
         }catch (Exception e){
-            return "redirect:/register"; // throw new BadCredentialsException("user with this username already exists");
+            System.out.println("ex" + e);
+            return "redirect:/register?error=true"; // throw new BadCredentialsException("user with this username already exists");
         }
-        return "login";
+        return "redirect:/register?success=true";
     }
 
 }

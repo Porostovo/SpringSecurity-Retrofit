@@ -27,6 +27,9 @@
                 <div class="alert alert-info">You've successfully registered
                     to our app!</div>
             </div>
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">User with this Username already exists.</div>
+            </div>
             <div class="card-header">
                 <h2 class="text-center">Registration</h2>
             </div>

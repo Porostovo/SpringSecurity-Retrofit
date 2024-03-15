@@ -17,15 +17,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final UserAuthentication userAuthentication;
     private final UserServiceImp userServiceImp;
+
     @Autowired
     public SecurityConfig(UserAuthentication userAuthentication, UserServiceImp userServiceImp) {
         this.userAuthentication = userAuthentication;
@@ -33,7 +35,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -43,18 +45,32 @@ public class SecurityConfig {
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/login/**").permitAll()
+                                //All other requests are required to be authenticated.Except register, index, login ↑
                                 .anyRequest().authenticated())
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .defaultSuccessUrl("/movieList", true)
-                                .failureUrl("/index")
+                                //If a user tries to access a protected resource without being authenticated, they will
+                                // be redirected to the login page specified by loginPage("/login")
+                                //If Login failed, failureHandler will redirect the user back to the login page with the
+                                // error=true parameter in the URL. You can then use this parameter to display an error
+                                // message on the login page. -> we do no need .failureUrl("/login?error=true")
+                                .failureHandler(authenticationFailureHandler())
                 ).logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll())
                 .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    //This bean is responsible for handling authentication failures.
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+        failureHandler.setDefaultFailureUrl("/login?error=true");
+        return failureHandler;
     }
 
 
