@@ -23,18 +23,11 @@ import java.util.List;
 @Service
 @Component
 public class MovieServiceImp implements MovieService {
-
-    //private Retrofit retrofit;
-    //private MovieApi movieApi;
     private MovieRepository movieRepository;
 
     @Autowired
     public MovieServiceImp(MovieRepository movieRepository) {
-
         this.movieRepository = movieRepository;
-
-        //retrofit = RetrofitUtil.getRetrofitInstance();
-        //movieApi = retrofit.create(MovieApi.class);
     }
 
     @Override

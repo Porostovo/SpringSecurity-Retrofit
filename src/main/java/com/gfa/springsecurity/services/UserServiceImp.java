@@ -20,8 +20,7 @@ public class UserServiceImp implements UserService {
     public UserServiceImp(UserInfoRepository userInfoRepository) {
         this.userInfoRepository = userInfoRepository;
     }
-
-
+    
     private static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

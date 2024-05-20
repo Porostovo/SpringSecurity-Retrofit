@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie,Long> {
-  //  List<Movie> findMoviesByOriginal_titleContainingIgnoreCase();
     List<Movie> findMovieByOriginalTitle(String title);
 
 }
